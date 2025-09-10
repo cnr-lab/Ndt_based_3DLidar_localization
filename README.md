@@ -12,7 +12,7 @@ A ROS2 package for 3D LiDAR-based localization using NDT/GICP algorithms with po
 
 ## Packages
 
-- `lidar_localization_ros2`: Main localization package
+- `pcl_localization_ros2`: Main localization package
 - `ndt_omp_ros2`: NDT OpenMP implementation for ROS2
 
 ## Requirements
@@ -30,7 +30,7 @@ git clone https://github.com/cnr-lab/Ndt_based_3DLidar_localization.git
 
 # Build the workspace
 cd Ndt_based_3DLidar_localization
-colcon build --packages-select ndt_omp_ros2 lidar_localization_ros2
+colcon build --packages-select ndt_omp_ros2 pcl_localization_ros2
 source install/setup.bash
 ```
 
@@ -49,10 +49,9 @@ source install/setup.bash
 # Clean build (recommended for first time)
 cd Ndt_based_3DLidar_localization
 rm -rf build/ install/ log/
-colcon build --packages-select ndt_omp_ros2 lidar_localization_ros2
 
 # Symlink build (for development)
-colcon build --packages-select ndt_omp_ros2 lidar_localization_ros2 --symlink-install
+colcon build --packages-select ndt_omp_ros2 pcl_localization_ros2 --symlink-install
 
 # Source the workspace
 source install/setup.bash
@@ -68,10 +67,10 @@ source install/setup.bash
 
 ```bash
 # Launch the localization system
-ros2 launch lidar_localization_ros2 pcl_localization.launch.py
+ros2 launch pcl_localization_ros2 pcl_localization.launch.py
 
 # With custom map
-ros2 launch lidar_localization_ros2 pcl_localization.launch.py map_path:=/path/to/your/map.pcd
+ros2 launch pcl_localization_ros2 pcl_localization.launch.py map_path:=/path/to/your/map.pcd
 ```
 
 ### Complete System Setup
@@ -89,7 +88,7 @@ ros2 launch your_simulator_package simulator.launch.py
 # In terminal 2
 cd Ndt_based_3DLidar_localization
 source install/setup.bash
-ros2 launch lidar_localization_ros2 pcl_localization.launch.py
+ros2 launch pcl_localization_ros2 pcl_localization.launch.py
 ```
 
 3. **Set Initial Pose (in RViz)**
@@ -100,10 +99,10 @@ ros2 launch lidar_localization_ros2 pcl_localization.launch.py
 
 ```bash
 # Disable RViz
-ros2 launch lidar_localization_ros2 pcl_localization.launch.py rviz:=false
+ros2 launch pcl_localization_ros2 pcl_localization.launch.py rviz:=false
 
 # Use different map
-ros2 launch lidar_localization_ros2 pcl_localization.launch.py map_path:=/path/to/map.pcd
+ros2 launch pcl_localization_ros2 pcl_localization.launch.py map_path:=/path/to/map.pcd
 ```
 
 ### Verification
@@ -150,4 +149,4 @@ BSD-2-Clause License
 
 ## Acknowledgments
 
-Based on the original work by [rsasaki0109/lidar_localization_ros2](https://github.com/rsasaki0109/lidar_localization_ros2)
+Based on the original work by [rsasaki0109/pcl_localization_ros2](https://github.com/rsasaki0109/pcl_localization_ros2)
