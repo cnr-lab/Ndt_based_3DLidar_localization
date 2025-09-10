@@ -50,8 +50,11 @@ source install/setup.bash
 cd Ndt_based_3DLidar_localization
 rm -rf build/ install/ log/
 
+# First build for base dependency package
+colcon build --packages-select ndt_omp_ros2 --symlink-install
+
 # Symlink build (for development)
-colcon build --packages-select ndt_omp_ros2 pcl_localization_ros2 --symlink-install
+colcon build --packages-select pcl_localization_ros2 --symlink-install
 
 # Source the workspace
 source install/setup.bash
