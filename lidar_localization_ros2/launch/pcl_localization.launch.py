@@ -42,14 +42,14 @@ def generate_launch_description():
         parameters=[{'use_sim_time': True}]
         )
     
-    # Map Loader (PCD -> PointCloud2)
-    map_loader = launch_ros.actions.Node(
-        name='pcd_map_loader',
-        package='pcl_localization_ros2',
-        executable='pcd_map_loader.py',
-        output='screen',
-        parameters=[{'use_sim_time': True}]
-        )
+    # Map Loader (PCD -> PointCloud2) - Not needed, pcl_localization loads map directly
+    # map_loader = launch_ros.actions.Node(
+    #     name='pcd_map_loader',
+    #     package='pcl_localization_ros2',
+    #     executable='pcd_map_loader.py',
+    #     output='screen',
+    #     parameters=[{'use_sim_time': True}]
+    #     )
     
     # PCL Transform Publisher (pose -> TF)
     pcl_transform_publisher = launch_ros.actions.Node(

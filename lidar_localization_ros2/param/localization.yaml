@@ -11,7 +11,7 @@
       scan_min_range: 1.0
       scan_period: 0.1
       use_pcd_map: true
-      map_path: "/root/fast_lio_slam_ws/maps/custom_map_20250909_120724.pcd"
+      map_path: "package://pcl_localization_ros2/maps/custom_map_20250909_120724.pcd"
       set_initial_pose: true
       initial_pose_x: 0.27
       initial_pose_y: 0.0
