@@ -47,7 +47,7 @@ source install/setup.bash
 
 ```bash
 # Clean build (recommended for first time)
-cd Ndt_based_3DLidar_localization
+cd Ndt_based_3DLidar_localization_ws
 rm -rf build/ install/ log/
 
 # First build for base dependency package
