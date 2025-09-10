@@ -21,7 +21,7 @@
       initial_pose_qz: 0.0
       initial_pose_qw: 0.0
       use_odom: true
-      use_imu: false
+      # use_imu: false  #not used because of EKF
       enable_debug: true
       global_frame_id: map
       odom_frame_id: odom

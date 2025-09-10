@@ -12,6 +12,7 @@ endif()
 SET(CMAKE_CXX_FLAGS "-O2 -g ${CMAKE_CXX_FLAGS}")
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_index_cpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
@@ -67,6 +68,7 @@ target_link_libraries(pcl_localization_node
   ${PCL_LIBRARIES}
   ${rclcpp_lifecycle_LIBRARIES}
   ${std_msgs_LIBRARIES}
+  ${ament_index_cpp_LIBRARIES}
 )
 
 # PointCloud Converter
@@ -100,6 +102,7 @@ install(DIRECTORY
   launch
   param
   rviz
+  maps
   DESTINATION share/${PROJECT_NAME}/
 )
 

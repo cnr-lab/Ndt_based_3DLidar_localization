@@ -1,4 +1,5 @@
 #include <pcl_localization/pcl_localization_component.hpp>
+#include <ament_index_cpp/get_package_share_directory.hpp>
 PCLLocalization::PCLLocalization(const rclcpp::NodeOptions & options)
 : rclcpp_lifecycle::LifecycleNode("pcl_localization", options),
   clock_(RCL_ROS_TIME),
@@ -82,7 +83,17 @@ CallbackReturn PCLLocalization::on_activate(const rclcpp_lifecycle::State &)
 
   if (use_pcd_map_) {
     pcl::PointCloud<pcl::PointXYZI>::Ptr map_cloud_ptr(new pcl::PointCloud<pcl::PointXYZI>);
-    pcl::io::loadPCDFile(map_path_, *map_cloud_ptr);
+    
+    // Convert package:// URI to actual file path
+    std::string actual_map_path = map_path_;
+    if (map_path_.find("package://") == 0) {
+      std::string package_name = map_path_.substr(10, map_path_.find("/", 10) - 10);
+      std::string relative_path = map_path_.substr(10 + package_name.length());
+      actual_map_path = ament_index_cpp::get_package_share_directory(package_name) + relative_path;
+      RCLCPP_INFO(get_logger(), "Resolved map path: %s", actual_map_path.c_str());
+    }
+    
+    pcl::io::loadPCDFile(actual_map_path, *map_cloud_ptr);
     RCLCPP_INFO(get_logger(), "Map Size %ld", map_cloud_ptr->size());
 
     sensor_msgs::msg::PointCloud2::SharedPtr map_msg_ptr(new sensor_msgs::msg::PointCloud2);
