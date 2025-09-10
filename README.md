@@ -34,7 +34,37 @@ colcon build --packages-select ndt_omp_ros2 lidar_localization_ros2
 source install/setup.bash
 ```
 
+## Build Instructions
+
+### Prerequisites
+- ROS2 Humble
+- PCL (Point Cloud Library)
+- OpenMP
+- Eigen3
+- robot_localization (for EKF)
+
+### Build Commands
+
+```bash
+# Clean build (recommended for first time)
+cd Ndt_based_3DLidar_localization
+rm -rf build/ install/ log/
+colcon build --packages-select ndt_omp_ros2 lidar_localization_ros2
+
+# Symlink build (for development)
+colcon build --packages-select ndt_omp_ros2 lidar_localization_ros2 --symlink-install
+
+# Source the workspace
+source install/setup.bash
+```
+
+### Build Troubleshooting
+- If you encounter CMake cache issues, clean the build directory first
+- Ensure all dependencies are installed: `rosdep install --from-paths src --ignore-src -r -y`
+
 ## Usage
+
+### Basic Usage
 
 ```bash
 # Launch the localization system
@@ -42,6 +72,52 @@ ros2 launch lidar_localization_ros2 pcl_localization.launch.py
 
 # With custom map
 ros2 launch lidar_localization_ros2 pcl_localization.launch.py map_path:=/path/to/your/map.pcd
+```
+
+### Complete System Setup
+
+1. **Start Simulation (if using simulation)**
+```bash
+# In terminal 1
+cd /path/to/your/simulation/workspace
+source install/setup.bash
+ros2 launch your_simulator_package simulator.launch.py
+```
+
+2. **Launch Localization System**
+```bash
+# In terminal 2
+cd Ndt_based_3DLidar_localization
+source install/setup.bash
+ros2 launch lidar_localization_ros2 pcl_localization.launch.py
+```
+
+3. **Set Initial Pose (in RViz)**
+- Use RViz's "2D Pose Estimate" tool
+- Click on the map to set the robot's initial position
+
+### Launch Options
+
+```bash
+# Disable RViz
+ros2 launch lidar_localization_ros2 pcl_localization.launch.py rviz:=false
+
+# Use different map
+ros2 launch lidar_localization_ros2 pcl_localization.launch.py map_path:=/path/to/map.pcd
+```
+
+### Verification
+
+Check if the system is working:
+```bash
+# Check topics
+ros2 topic list
+
+# Check TF frames
+ros2 run tf2_tools view_frames
+
+# Monitor localization pose
+ros2 topic echo /pcl_pose
 ```
 
 ## Topics
