@@ -24,7 +24,7 @@ Thumbs.db
 *.temp
 
 # PCD map files (if large)
-*.pcd
+# *.pcd
 
 # Backup files
 *~
