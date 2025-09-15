@@ -435,7 +435,7 @@ void PCLLocalization::cloudReceived(const sensor_msgs::msg::PointCloud2::ConstSh
   {
     odom_available_ = true;
     odom_sub_ = create_subscription<nav_msgs::msg::Odometry>(
-      "odom_filtered", rclcpp::SensorDataQoS(),
+      "/odometry/filtered", rclcpp::SensorDataQoS(),
       std::bind(&PCLLocalization::odomReceived, this, std::placeholders::_1));
   }
   RCLCPP_INFO(get_logger(), "cloudReceived");
@@ -500,7 +500,7 @@ void PCLLocalization::cloudReceived(const sensor_msgs::msg::PointCloud2::ConstSh
   geometry_msgs::msg::TransformStamped transform_stamped;
   transform_stamped.header.stamp = msg->header.stamp;
   transform_stamped.header.frame_id = global_frame_id_;
-  transform_stamped.child_frame_id = base_frame_id_;
+  transform_stamped.child_frame_id = odom_frame_id_;  // map -> odom TF 발행
   transform_stamped.transform.translation.x = static_cast<double>(final_transformation(0, 3));
   transform_stamped.transform.translation.y = static_cast<double>(final_transformation(1, 3));
   transform_stamped.transform.translation.z = static_cast<double>(final_transformation(2, 3));
