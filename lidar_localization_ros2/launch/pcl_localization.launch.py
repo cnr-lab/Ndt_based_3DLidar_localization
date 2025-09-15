@@ -67,7 +67,6 @@ def generate_launch_description():
         'robot_localization_ekf.yaml'
     )
     
-    # 파라미터 파일 경로 로그 출력
     print(f"EKF Filter using parameter file: {ekf_param_file}")
     
     ekf_filter = launch_ros.actions.Node(
@@ -150,7 +149,7 @@ def generate_launch_description():
     ld.add_action(rviz_arg)  # Launch argument
     ld.add_action(pointcloud_converter)  # PointCloud converter
     # ld.add_action(map_loader)  # Map loader
-    # ld.add_action(ekf_filter)  # EKF filter - DISABLED
+    ld.add_action(ekf_filter)  # EKF filter
     ld.add_action(pcl_localization)
     # ld.add_action(pcl_transform_publisher)  # TF 변환을 위해 필요
     ld.add_action(rviz_node)  # RViz visualization
