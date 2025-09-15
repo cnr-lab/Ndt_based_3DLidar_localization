@@ -497,15 +497,40 @@ void PCLLocalization::cloudReceived(const sensor_msgs::msg::PointCloud2::ConstSh
   corrent_pose_with_cov_stamped_ptr_->pose.pose.orientation = quat_msg;
   pose_pub_->publish(*corrent_pose_with_cov_stamped_ptr_);
 
-  geometry_msgs::msg::TransformStamped transform_stamped;
-  transform_stamped.header.stamp = msg->header.stamp;
-  transform_stamped.header.frame_id = global_frame_id_;
-  transform_stamped.child_frame_id = odom_frame_id_;  // map -> odom TF 발행
-  transform_stamped.transform.translation.x = static_cast<double>(final_transformation(0, 3));
-  transform_stamped.transform.translation.y = static_cast<double>(final_transformation(1, 3));
-  transform_stamped.transform.translation.z = static_cast<double>(final_transformation(2, 3));
-  transform_stamped.transform.rotation = quat_msg;
-  broadcaster_.sendTransform(transform_stamped);
+  // 1) Get current base_link pose in odom frame
+  geometry_msgs::msg::TransformStamped odom_to_base;
+  try {
+    odom_to_base = tfbuffer_.lookupTransform(
+        odom_frame_id_, base_frame_id_, tf2::TimePointZero);
+  } catch (tf2::TransformException &ex) {
+    RCLCPP_WARN(get_logger(), "Failed to lookup odom->base transform: %s", ex.what());
+    return;
+  }
+
+  // 2) Create map->base_link transform from PCL registration result
+  geometry_msgs::msg::TransformStamped map_to_base;
+  map_to_base.header.stamp = msg->header.stamp;
+  map_to_base.header.frame_id = global_frame_id_;  // "map"
+  map_to_base.child_frame_id = base_frame_id_;     // "base_link"
+  map_to_base.transform.translation.x = static_cast<double>(final_transformation(0, 3));
+  map_to_base.transform.translation.y = static_cast<double>(final_transformation(1, 3));
+  map_to_base.transform.translation.z = static_cast<double>(final_transformation(2, 3));
+  map_to_base.transform.rotation = quat_msg;
+
+  // 3) Calculate: T_map_odom = T_map_base * (T_odom_base)^-1
+  tf2::Transform tf_map_base, tf_odom_base;
+  tf2::fromMsg(map_to_base.transform, tf_map_base);
+  tf2::fromMsg(odom_to_base.transform, tf_odom_base);
+  tf2::Transform tf_map_odom = tf_map_base * tf_odom_base.inverse();
+
+  // 4) Broadcast map->odom transform
+  geometry_msgs::msg::TransformStamped map_to_odom;
+  map_to_odom.header.stamp = msg->header.stamp;
+  map_to_odom.header.frame_id = global_frame_id_;   // "map"
+  map_to_odom.child_frame_id = odom_frame_id_;      // "odom"
+  map_to_odom.transform = tf2::toMsg(tf_map_odom);
+
+  broadcaster_.sendTransform(map_to_odom);
 
   geometry_msgs::msg::PoseStamped::SharedPtr pose_stamped_ptr(new geometry_msgs::msg::PoseStamped);
   pose_stamped_ptr->header.stamp = msg->header.stamp;
