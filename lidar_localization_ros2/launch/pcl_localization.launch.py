@@ -58,21 +58,25 @@ def generate_launch_description():
         executable='pcl_transform_publisher.py',
         output='screen',
         parameters=[{'use_sim_time': True}]
-        )
+    )
     
     # EKF Filter for sensor fusion
+    ekf_param_file = os.path.join(
+        get_package_share_directory('pcl_localization_ros2'),
+        'param',
+        'robot_localization_ekf.yaml'
+    )
+    
+    # 파라미터 파일 경로 로그 출력
+    print(f"EKF Filter using parameter file: {ekf_param_file}")
+    
     ekf_filter = launch_ros.actions.Node(
         name='ekf_filter',
         package='robot_localization',
         executable='ekf_node',
         output='screen',
-        parameters=[os.path.join(
-            get_package_share_directory('pcl_localization_ros2'),
-            'param',
-            'robot_localization_ekf.yaml'
-        )],
-
-        )
+        parameters=[ekf_param_file]
+    )
 
     # RViz Visualization
     rviz_node = Node(
@@ -146,7 +150,7 @@ def generate_launch_description():
     ld.add_action(rviz_arg)  # Launch argument
     ld.add_action(pointcloud_converter)  # PointCloud converter
     # ld.add_action(map_loader)  # Map loader
-    ld.add_action(ekf_filter)  # EKF filter
+    # ld.add_action(ekf_filter)  # EKF filter - DISABLED
     ld.add_action(pcl_localization)
     # ld.add_action(pcl_transform_publisher)  # TF 변환을 위해 필요
     ld.add_action(rviz_node)  # RViz visualization
